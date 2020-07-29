@@ -1,5 +1,6 @@
 import express from 'express';
+import { doThing } from './middleware';
 
 export const statisticsRouter = express.Router();
 
-statisticsRouter.use('/', (req, res) => res.send('Hello World!'));
+statisticsRouter.use('/', doThing(), (req, res) => res.send('Hello World!'));
