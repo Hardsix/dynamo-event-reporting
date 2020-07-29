@@ -1,0 +1,25 @@
+version: "3"
+services:
+  app-node:
+    container_name: app-node
+    build:
+      context: .
+      dockerfile: ./docker/app/app.Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "dynamodb-local"
+    links:
+      - "dynamodb-local"
+    environment:
+      - AWS_ACCESS_KEY_ID='DUMMYIDEXAMPLE'
+      - AWS_SECRET_ACCESS_KEY='DUMMYEXAMPLEKEY'
+      - REGION='eu-west-1'
+
+  dynamodb-local:
+    build:
+      context: .
+      dockerfile: ./docker/db/db.Dockerfile
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
