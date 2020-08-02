@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import fs from 'fs';
 import { Request, Response, combinePDFBuffers } from '../../common';
 import { asyncMiddleware } from '../../common/async-middleware';
 import { EventGroups } from '../../db/events';
@@ -50,12 +49,13 @@ export function buildBarChart() {
 
     const countReport = await anychartExport.exportTo(eventCountsByGroupChart, 'pdf');
     const boxSizeReport = await anychartExport.exportTo(eventBoxSizeGroupChart, 'pdf');
-    fs.writeFile('anychart.pdf', combinePDFBuffers(countReport, boxSizeReport), function (fsWriteError) {
-      if (fsWriteError) {
-        console.log(fsWriteError);
-      } else {
-        console.log('Complete');
-      }
+
+    const report = combinePDFBuffers(countReport, boxSizeReport);
+    res.writeHead(200, {
+      'Content-Type': 'application/pdf',
+      'Content-disposition': 'attachment;filename=report.pdf',
+      'Content-Length': report.length,
     });
+    res.end(report);
   });
 }

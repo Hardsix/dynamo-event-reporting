@@ -1,4 +1,8 @@
-FROM node:13.10.1-alpine3.10
+FROM node:12.18.3
+RUN apt-get update
+RUN apt-get install python -y
+
+RUN apt-get install imagemagick librsvg2-dev librsvg2-bin -y
 
 WORKDIR /app
 
