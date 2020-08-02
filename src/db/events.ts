@@ -14,9 +14,13 @@ export type Event = {
   box: BoundingBox;
 };
 
+export type EventGroups = {
+  [x: string]: Event[];
+};
+
 export function findGroups(from: Date, to: Date, interval: number) {
-  const events: Event[][] = [
-    [
+  const eventGroups: EventGroups = {
+    [new Date(2020, 7, 31, 5, 0).toString()]: [
       {
         timestamp: new Date(2020, 7, 31, 5, 0),
         source: 'garage',
@@ -40,7 +44,7 @@ export function findGroups(from: Date, to: Date, interval: number) {
         },
       },
     ],
-    [
+    [new Date(2020, 7, 31, 5, 31).toString()]: [
       {
         timestamp: new Date(2020, 7, 31, 5, 31),
         source: 'garage',
@@ -65,7 +69,7 @@ export function findGroups(from: Date, to: Date, interval: number) {
         },
       },
     ],
-  ];
+  };
 
-  return events;
+  return eventGroups;
 }

@@ -12,6 +12,6 @@ export function retrieveEvents() {
 
     const { from, to, interval } = filter;
     const events = eventsRepository.findGroups(from, to, interval);
-    _.set(req, 'context.events', events);
+    _.set(req, 'context.eventGroups', events);
   });
 }
