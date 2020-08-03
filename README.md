@@ -15,3 +15,7 @@ Should work but untested.
 ## For docker
 
 Install Docker on Linux or Mac, run `docker-compose up` and enjoy
+
+## With regard to input file
+
+400 MB is too big to be hosted on Github. Shortened file is commited into repo in docker/app/events-raw-dev-short.json. Replace manually with larger file if desired, and run `docker-compose up`. Have patience while the database is populated.

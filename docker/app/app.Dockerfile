@@ -4,6 +4,8 @@ RUN apt-get install python -y
 
 RUN apt-get install imagemagick librsvg2-dev librsvg2-bin -y
 
+COPY ./docker/app/events-raw-dev-short.json /app/
+
 WORKDIR /app
 
 COPY ./package.json .

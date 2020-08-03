@@ -14,7 +14,8 @@
     "pretty": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
-    "outDir": "./built"
+    "outDir": "./built",
+    "resolveJsonModule": true
   },
   "include": ["src/**/*", "app/**/*", "cli/**/*", "core"],
   "exclude": ["node_modules"]

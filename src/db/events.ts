@@ -1,7 +1,8 @@
-import dynamoClient from 'aws-sdk/clients/dynamodb';
+import _ from 'lodash';
+import * as client from './dynamo-client';
 
 export type BoundingBox = {
-  id: string;
+  id: number;
   x: number;
   y: number;
   height: number;
@@ -9,67 +10,79 @@ export type BoundingBox = {
 };
 
 export type Event = {
-  timestamp: Date;
+  timestamp: number;
   source: string;
-  box: BoundingBox;
+  boxes: BoundingBox[];
 };
 
 export type EventGroups = {
   [x: string]: Event[];
 };
 
-export function findGroups(from: Date, to: Date, interval: number) {
-  const eventGroups: EventGroups = {
-    [new Date(2020, 7, 31, 5, 0).toString()]: [
-      {
-        timestamp: new Date(2020, 7, 31, 5, 0),
-        source: 'garage',
-        box: {
-          id: '1',
-          x: 3,
-          y: 15,
-          height: 14,
-          width: 3,
-        },
-      },
-      {
-        timestamp: new Date(2020, 7, 31, 5, 0),
-        source: 'outside',
-        box: {
-          id: '3',
-          x: 3,
-          y: 15,
-          height: 14,
-          width: 3,
-        },
-      },
-    ],
-    [new Date(2020, 7, 31, 5, 31).toString()]: [
-      {
-        timestamp: new Date(2020, 7, 31, 5, 31),
-        source: 'garage',
-        box: {
-          id: '2',
-          x: 3,
-          y: 15,
-          height: 14,
-          width: 3,
-        },
-      },
+function convertToEvent(entry): Event {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const boxes: any[] = _.map(entry.t, (item) => item.M);
 
-      {
-        timestamp: new Date(2020, 7, 31, 5, 31),
-        source: 'outside',
-        box: {
-          id: '4',
-          x: 3,
-          y: 15,
-          height: 14,
-          width: 3,
-        },
-      },
-    ],
+  return {
+    source: entry.src,
+    timestamp: entry.ts,
+    boxes: _.map(boxes, (box) => {
+      return {
+        id: parseInt(box.id.N),
+        x: parseInt(box.x.N),
+        y: parseInt(box.y.N),
+        height: parseInt(box.h.N),
+        width: parseInt(box.w.N),
+      };
+    }),
   };
+}
 
-  return eventGroups;
+export function find(from: number, to: number): Promise<Event[]> {
+  return new Promise((resolve, reject) => {
+    client.docClient.query(
+      {
+        TableName: 'Events',
+        KeyConditionExpression: `src = :src and ts between :from and :to`,
+        ExpressionAttributeValues: {
+          ':from': from,
+          ':to': to,
+          ':src': 'EquipmentShare003',
+        },
+      },
+      (err, data) => {
+        if (err) reject(err);
+
+        resolve(_.map(data.Items, (item) => convertToEvent(item)));
+      },
+    );
+  });
+}
+
+export function getAll(): Promise<Event[]> {
+  return new Promise((resolve, reject) => {
+    client.docClient.scan(
+      {
+        TableName: 'Events',
+      },
+      (err, data) => {
+        if (err) reject(err);
+
+        resolve(_.map(data.Items, (item) => convertToEvent(item)));
+      },
+    );
+  });
+}
+
+export async function findGroups(from: number, to: number, interval: number) {
+  const allItems = await find(from, to);
+  const intervalMilis = interval * 60 * 1000;
+
+  const groups = _.groupBy(allItems, (item) => {
+    const groupBase = Math.floor(item.timestamp / intervalMilis);
+
+    return groupBase;
+  });
+
+  return groups;
 }

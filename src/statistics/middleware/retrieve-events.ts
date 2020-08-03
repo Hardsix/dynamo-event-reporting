@@ -1,17 +1,18 @@
 import _ from 'lodash';
-import { Request, Response } from '../../common';
+import { Request } from '../../common';
 import { asyncMiddleware } from '../../common/async-middleware';
 import { eventsRepository } from '../../db';
 
 export function retrieveEvents() {
-  return asyncMiddleware(async (req: Request, res: Response) => {
+  return asyncMiddleware(async (req: Request) => {
     const filter = req?.context?.filter;
-    if (!filter || !_.isDate(filter?.from) || !_.isDate(filter?.to) || !_.isNumber(filter?.interval)) {
+    if (!filter || !_.isNumber(filter?.from) || !_.isNumber(filter?.to) || !_.isNumber(filter?.interval)) {
       throw new Error(`'from', 'to' and 'interval' must be defined`);
     }
 
     const { from, to, interval } = filter;
-    const events = eventsRepository.findGroups(from, to, interval);
+    const events = await eventsRepository.findGroups(from, to, interval);
+
     _.set(req, 'context.eventGroups', events);
   });
 }

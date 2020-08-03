@@ -9,18 +9,25 @@ services:
       - "3000:3000"
       - "8080:8080"
     depends_on:
-      - "dynamodb-local"
+      - "dynamodb"
     links:
-      - "dynamodb-local"
+      - "dynamodb"
     environment:
-      - AWS_ACCESS_KEY_ID='DUMMYIDEXAMPLE'
-      - AWS_SECRET_ACCESS_KEY='DUMMYEXAMPLEKEY'
-      - REGION='eu-west-1'
+      - AWS_ACCESS_KEY_ID=DUMMYIDEXAMPLE
+      - AWS_SECRET_ACCESS_KEY=DUMMYEXAMPLEKEY
+      - REGION=eu-west-1
+      - DYNAMO_ENDPOINT=http://dynamodb:8000
 
-  dynamodb-local:
+  dynamodb:
     build:
-      context: .
-      dockerfile: ./docker/db/db.Dockerfile
-    container_name: dynamodb-local
+      context: ./docker/db
+      dockerfile: db.Dockerfile
+    container_name: dynamodb
+    expose:
+      - 8000
+    environment:
+      - AWS_ACCESS_KEY_ID=DUMMYIDEXAMPLE
+      - AWS_SECRET_ACCESS_KEY=DUMMYEXAMPLEKEY
+      - REGION=eu-west-1
     ports:
       - "8000:8000"

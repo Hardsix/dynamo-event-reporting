@@ -37,8 +37,8 @@ export function parseRequestParams() {
     }
 
     _.set(req, 'context.filter', {
-      from: new Date(parseIntegerParam(from)),
-      to: new Date(parseIntegerParam(to)),
+      from: parseIntegerParam(from),
+      to: parseIntegerParam(to),
       interval: parseIntegerParam(interval || '60'),
     });
   });

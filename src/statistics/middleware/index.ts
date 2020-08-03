@@ -1,5 +1,5 @@
-import { buildBarChart } from './build-bar-chart';
+import { buildBarChartReport } from './build-bar-chart-report';
 import { parseRequestParams } from './parse-request-params';
 import { retrieveEvents } from './retrieve-events';
 
-export { buildBarChart, retrieveEvents, parseRequestParams };
+export { buildBarChartReport, retrieveEvents, parseRequestParams };
