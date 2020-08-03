@@ -81,9 +81,9 @@ export async function findGroups(from: number, to: number, interval: number) {
   const groups = _.groupBy(allItems, (item) => {
     const groupBase = Math.floor(item.timestamp / intervalMilis);
 
-    return `${new Date(from + groupBase * intervalMilis)}-${new Date(
+    return `${new Date(from + groupBase * intervalMilis).toUTCString()}-${new Date(
       from + groupBase * intervalMilis + intervalMilis,
-    )}`;
+    ).toUTCString()}`;
   });
 
   return groups;
