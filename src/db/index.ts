@@ -1,3 +1,3 @@
-import * as eventsRepository from './events';
+import { ddb as dynamoClient, docClient } from './dynamo-client';
 
-export { eventsRepository };
+export { dynamoClient, docClient };

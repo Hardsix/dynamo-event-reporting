@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import * as client from './dynamo-client';
+import { docClient } from '../db';
 
 export type BoundingBox = {
   id: number;
@@ -40,7 +40,7 @@ function convertToEvent(entry): Event {
 
 export function find(from: number, to: number): Promise<Event[]> {
   return new Promise((resolve, reject) => {
-    client.docClient.query(
+    docClient.query(
       {
         TableName: 'Events',
         KeyConditionExpression: `src = :src and ts between :from and :to`,
@@ -61,7 +61,7 @@ export function find(from: number, to: number): Promise<Event[]> {
 
 export function getAll(): Promise<Event[]> {
   return new Promise((resolve, reject) => {
-    client.docClient.scan(
+    docClient.scan(
       {
         TableName: 'Events',
       },
@@ -81,7 +81,9 @@ export async function findGroups(from: number, to: number, interval: number) {
   const groups = _.groupBy(allItems, (item) => {
     const groupBase = Math.floor(item.timestamp / intervalMilis);
 
-    return groupBase;
+    return `${new Date(from + groupBase * intervalMilis)}-${new Date(
+      from + groupBase * intervalMilis + intervalMilis,
+    )}`;
   });
 
   return groups;

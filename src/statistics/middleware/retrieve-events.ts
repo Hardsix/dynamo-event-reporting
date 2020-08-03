@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { Request } from '../../common';
 import { asyncMiddleware } from '../../common/async-middleware';
-import { eventsRepository } from '../../db';
+import { eventsRepository } from '../../events';
 
 export function retrieveEvents() {
   return asyncMiddleware(async (req: Request) => {

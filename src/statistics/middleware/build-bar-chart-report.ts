@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { Request, Response, combinePDFBuffers } from '../../common';
 import { asyncMiddleware } from '../../common/async-middleware';
-import { EventGroups } from '../../db/events';
+import { EventGroups, eventsRepository } from '../../events';
 
 /* eslint @typescript-eslint/no-var-requires: 0 */
 
