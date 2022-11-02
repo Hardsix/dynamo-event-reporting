@@ -19,7 +19,7 @@
     "dotenv": "^8.2.0",
     "dot-prop": ">=5.1.1",
     "express": "^4.17.1",
-    "hummus": "^1.0.108",
+    "hummus": "^1.0.111",
     "jsdom": "^16.3.0",
     "lodash": "^4.17.15",
     "memory-streams": "^0.1.3",
